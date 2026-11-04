@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">
+<path d="M420.0 338.0 Q328.0 306.0 236.0 274.0" fill="none" stroke="#C23A22" stroke-width="2.2" stroke-linecap="round"/><path d="M236.0 274.0 L245.0 273.1 L242.4 280.3 Z" fill="#C23A22"/>
+<path d="M420.0 338.0 Q375.0 311.0 330.0 284.0" fill="none" stroke="#C23A22" stroke-width="2.2" stroke-linecap="round"/><path d="M330.0 284.0 L339.0 284.9 L335.0 291.5 Z" fill="#C23A22"/>
+<path d="M420.0 338.0 Q420.0 313.0 420.0 288.0" fill="none" stroke="#C23A22" stroke-width="2.2" stroke-linecap="round"/><path d="M420.0 288.0 L423.8 296.1 L416.2 296.1 Z" fill="#C23A22"/>
+<path d="M420.0 338.0 Q445.0 308.0 470.0 278.0" fill="none" stroke="#C23A22" stroke-width="2.2" stroke-linecap="round"/><path d="M470.0 278.0 L467.7 286.7 L461.8 281.8 Z" fill="#C23A22"/>
+<path d="M420.0 338.0 Q480.0 300.0 540.0 262.0" fill="none" stroke="#C23A22" stroke-width="2.2" stroke-linecap="round"/><path d="M540.0 262.0 L535.2 269.6 L531.1 263.1 Z" fill="#C23A22"/>
+<path d="M458 236 L466 246 L474 232 L482 250" fill="none" stroke="#C23A22" stroke-width="3"/>
+<path d="M532 150 q6 -14 0 -26 q12 10 10 26 q-4 8 -10 0 Z" fill="#C23A22"/>
+<path d="M430.0 190.0 Q602.6 278.7 690.0 452.0" fill="none" stroke="#2A4AA8" stroke-width="3" stroke-linecap="round"/><path d="M690.0 452.0 L680.5 444.6 L689.7 440.0 Z" fill="#2A4AA8"/>
+<circle cx="320" cy="262" r="9" fill="none" stroke="#2A4AA8" stroke-width="2.4"/><circle cx="320" cy="262" r="15" fill="none" stroke="#2A4AA8" stroke-width="1.2" stroke-dasharray="2 3"/>
+</svg>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesa de Guerra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F0E8; --paper2:#FBFAF6; --band:#E9E4D8; --land:#E2DCCD; --rule:#B9B2A3;
+  --ink:#17171A; --ink2:#3A3832; --muted:#5F5B53;
+  --nav:#2A4AA8; --ter:#B23420; --ter-strong:#C23A22;
+  --mono:'IBM Plex Mono',ui-monospace,monospace; --sans:'Jost',system-ui,sans-serif; --serif:'EB Garamond',Georgia,serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.45}
+button{font:inherit;color:inherit}
+a{color:var(--nav)}
+.mono{font-family:var(--mono)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.muted{color:var(--muted)}
+
+/* barra superior */
+header{position:sticky;top:0;z-index:20;background:var(--ink);color:var(--paper)}
+.bar{max-width:1320px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;min-height:60px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand b{font-size:19px;font-weight:600}
+.brand span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:#B9B2A3}
+nav{display:flex;gap:2px;overflow-x:auto}
+nav a{display:flex;align-items:center;min-height:60px;padding:0 16px;color:#B9B2A3;text-decoration:none;font-size:15px;border-bottom:3px solid transparent}
+nav a[aria-current="page"]{color:var(--paper);font-weight:600;border-bottom-color:var(--ter-strong)}
+nav a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--nav);outline-offset:2px}
+
+main{max-width:1320px;margin:0 auto;padding:28px 20px 64px}
+h1{font-size:clamp(30px,4vw,44px);line-height:1.05;margin:6px 0 10px;font-weight:600;letter-spacing:-.01em}
+h2{font-size:22px;margin:0 0 10px;font-weight:600}
+.lead{max-width:760px;font-size:17px;color:var(--ink2);margin:0 0 24px}
+.view{display:none}.view.on{display:block}
+
+/* controles */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border:1.5px solid var(--ink);background:var(--paper2);cursor:pointer;text-decoration:none;color:var(--ink);font-size:15px}
+.btn.dark{background:var(--ink);color:var(--paper)}
+.btn.sel{background:var(--ter-strong);border-color:var(--ter-strong);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1.5px solid var(--ink);background:var(--paper2);cursor:pointer;font-size:14px;color:var(--ink);text-decoration:none}
+.chip .mono{font-size:12px}
+.code-aq{color:var(--nav)}.code-tr{color:var(--ter)}
+.panel{border:1.5px solid var(--ink);background:var(--paper2);padding:18px}
+.note{background:var(--band);padding:14px 16px;font-size:14px}
+.rule-top{border-top:1.5px solid var(--ink);padding-top:10px}
+
+/* código */
+.code-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px}
+.code-form{display:flex;gap:10px}
+.code-form input{flex:1;min-width:0;min-height:52px;padding:0 14px;border:1.5px solid var(--ink);background:var(--paper2);font-family:var(--mono);font-size:20px;color:var(--ink)}
+.result{margin-top:16px}
+.lams{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lam{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:76px;padding:12px 14px;border:1.5px solid var(--ink);background:var(--paper2);cursor:pointer;text-align:left}
+.lam .mono{font-size:12px;color:var(--ter)}
+.lam b{font-weight:600;font-size:16px}
+
+/* mapa */
+.map-layout{display:grid;grid-template-columns:240px minmax(0,1fr) 300px;gap:20px;align-items:start}
+.side{display:flex;flex-direction:column;gap:18px}
+.days{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.days .btn{padding:0;font-family:var(--mono);font-weight:600}
+.toggle{display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:0 12px;border:1.5px solid var(--ink);background:var(--paper2);cursor:pointer;text-align:left;font-size:15px}
+.box{width:18px;height:18px;border:2px solid var(--ink);flex:none}
+.toggle[aria-pressed="true"] .box{background:var(--ink)}
+.stage{position:relative;width:100%;border:1.5px solid var(--ink);background:var(--paper);overflow:hidden}
+.stage img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stage .lay{transition:opacity .25s}
+.pin{position:absolute;transform:translate(-50%,-50%);cursor:pointer;border:1.2px solid var(--ink);background:var(--paper);font-family:var(--mono);font-size:10px;line-height:14px;padding:0 3px;min-width:22px;text-align:center;color:var(--ink)}
+.pin:hover,.pin.hi{background:var(--ink);color:var(--paper)}
+.mv{position:absolute;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;border:0;color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--paper)}
+.mv.aqueo{background:var(--nav)}.mv.troyano{background:var(--ter-strong)}
+.mv.hi{box-shadow:0 0 0 3px var(--ink)}
+.ship{position:absolute;transform:translate(-50%,-50%);border-radius:50%;border:0;background:transparent;cursor:pointer;padding:0}
+.ship span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:10px;color:var(--ink)}
+.ship:hover,.ship.hi{background:rgba(42,74,168,.35);box-shadow:0 0 0 2px var(--nav)}
+.ally{position:absolute;transform:translate(-50%,-50%);width:20px;height:20px;border:0;background:transparent;cursor:pointer}
+.ally:hover,.ally.hi{box-shadow:0 0 0 2px var(--ter-strong);border-radius:50%}
+.maptabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.timeline{margin-top:10px}
+.tl{display:grid;grid-template-columns:repeat(51,1fr);gap:2px;height:22px}
+.tl span{background:var(--land)}
+.tl span.c{background:var(--ter-strong);opacity:.55}
+.tl span.on{background:var(--ter-strong);opacity:1;outline:2px solid var(--ink)}
+.movlist{display:grid;grid-template-columns:26px 1fr;gap:8px 10px;font-size:14px}
+.movlist .n{font-family:var(--mono);font-weight:600}
+.legend{display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.legend div{display:flex;align-items:center;gap:8px}
+
+/* fichas */
+.fichas{display:grid;grid-template-columns:340px minmax(0,1fr);gap:24px;align-items:start}
+.search{width:100%;min-height:48px;padding:0 14px;border:1.5px solid var(--ink);background:var(--paper2);font-size:16px;font-family:var(--sans);color:var(--ink)}
+.list{border-top:1.5px solid var(--ink);max-height:68vh;overflow:auto}
+.item{display:grid;grid-template-columns:96px 1fr;align-items:center;gap:8px;width:100%;min-height:48px;padding:6px 4px;border:0;border-bottom:1px solid var(--rule);background:transparent;text-align:left;cursor:pointer}
+.item .mono{font-size:12px}
+.item[aria-current="true"]{background:var(--band)}
+.detail .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tag{padding:4px 10px;color:#fff;font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.06em}
+.tag.aqueo{background:var(--nav)}.tag.troyano{background:var(--ter-strong)}.tag.neutro{background:var(--ink)}.tag.esparta{background:var(--ter-strong)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);margin:18px 0}
+.fields div{padding:10px 12px 10px 0;display:flex;flex-direction:column;gap:2px}
+.fields span:first-child{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.body{font-size:17px;max-width:720px}
+.cross{margin:16px 0;max-width:720px}
+.cross b{color:var(--ter)}
+
+/* relato */
+.relato{display:grid;grid-template-columns:240px minmax(0,1fr) 380px;gap:24px;align-items:start}
+.jlist{border-top:1.5px solid var(--ink)}
+.jbtn{display:flex;flex-direction:column;align-items:flex-start;width:100%;min-height:56px;padding:8px 6px;border:0;border-bottom:1px solid var(--rule);background:transparent;cursor:pointer;text-align:left}
+.jbtn b{font-size:16px;font-weight:600}.jbtn span{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.jbtn[aria-current="true"] b{color:var(--ter)}
+.phase{display:grid;grid-template-columns:22px 1fr;align-items:center;width:100%;min-height:44px;padding:0 6px;border:0;background:transparent;cursor:pointer;text-align:left;font-size:14.5px}
+.phase[aria-current="true"]{background:var(--ink);color:var(--paper);font-weight:600}
+.prog{display:grid;gap:4px;margin:10px 0 18px}
+.prog span{height:6px;background:var(--land)}.prog span.done{background:var(--ink)}.prog span.on{background:var(--ter-strong)}
+.text{font-family:var(--serif);font-size:22px;line-height:1.55;margin:0 0 14px;max-width:640px}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.pager .btn{justify-content:space-between;min-height:56px}
+
+footer{max-width:1320px;margin:0 auto;padding:0 20px 40px;font-size:13px;color:var(--muted)}
+
+@media (max-width:1100px){
+  .map-layout{grid-template-columns:minmax(0,1fr) 280px}
+  .map-layout .side.left{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .relato{grid-template-columns:220px minmax(0,1fr)}
+  .relato .mini{grid-column:1/-1}
+}
+@media (max-width:760px){
+  .code-grid,.fichas,.map-layout,.relato{grid-template-columns:minmax(0,1fr)}
+  .list{max-height:none}
+  .brand span{display:none}
+  nav a{padding:0 10px;min-height:52px}
+  .pin{font-size:8px;line-height:11px;min-width:16px;padding:0 1px}
+  .mv{width:20px;height:20px;font-size:11px}
+  .text{font-size:19px}
+  .pager{grid-template-columns:1fr}
+  .maptabs .btn{flex:1 1 100%}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" fill="none" stroke="#F3F0E8" stroke-width="1.5"/><path d="M9 1v24M17 1v24M1 9h24M1 17h24" stroke="#F3F0E8"/><rect x="17" y="9" width="8" height="8" fill="#C23A22"/></svg>
+      <b>Mesa de Guerra</b><span>TÁCTICA Y TERRITORIO · ATLAS I</span>
+    </div>
+    <nav aria-label="Secciones">
+      <a href="#codigo" data-v="codigo">Código</a>
+      <a href="#mapa" data-v="mapa">Mapa</a>
+      <a href="#fichas" data-v="fichas">Fichas</a>
+      <a href="#relato" data-v="relato">Relato</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- CÓDIGO -->
+<section class="view" id="v-codigo" aria-labelledby="t-codigo">
+  <span class="eyebrow" style="color:var(--ter)">Papel ⇄ pantalla</span>
+  <h1 id="t-codigo">Entrá desde el atlas</h1>
+  <p class="lead">Cada lámina y cada elemento del atlas impreso tiene un código. Escribilo, o elegí una lámina, y la mesa abre la misma vista con las capas que el papel no puede mostrar a la vez.</p>
+  <div class="code-grid">
+    <div>
+      <form class="code-form" id="codeForm" autocomplete="off">
+        <label for="codeIn" class="eyebrow" style="position:absolute;left:-9999px">Código del atlas</label>
+        <input id="codeIn" placeholder="IL·C·07 · ATLAS-I/P05" spellcheck="false">
+        <button class="btn dark" type="submit">Abrir</button>
+      </form>
+      <p class="muted" style="font-size:14px;margin:8px 0 0">Fuente · tipo · número. <span class="mono">IL</span> Ilíada, <span class="mono">TU</span> Tucídides · <span class="mono">U</span> unidad, <span class="mono">C</span> comandante, <span class="mono">L</span> lugar, <span class="mono">O</span> operación. Se puede escribir sin puntos: <span class="mono">ilc07</span>.</p>
+      <div class="result" id="codeResult" aria-live="polite"></div>
+      <div class="note" style="margin-top:20px">En la versión final el QR de cada lámina abre esta pantalla directamente. En este prototipo, escribí el código impreso debajo del QR (por ejemplo <span class="mono">ATLAS-I/P05</span>).</div>
+    </div>
+    <div>
+      <h2 class="rule-top">Láminas del atlas</h2>
+      <div class="lams" id="lams"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MAPA -->
+<section class="view" id="v-mapa" aria-labelledby="t-mapa">
+  <span class="eyebrow" style="color:var(--ter)">Lectura exploratoria</span>
+  <h1 id="t-mapa">Mapa</h1>
+  <div class="maptabs" role="group" aria-label="Mapas">
+    <button class="btn" data-map="troya">La llanura de Troya · P05</button>
+    <button class="btn" data-map="egeo">Catálogo de las naves · P04</button>
+    <button class="btn" data-map="platea">Asedio de Platea · P08</button>
+  </div>
+  <div class="map-layout">
+    <div class="side left" id="mapLeft"></div>
+    <div>
+      <div class="stage" id="stage"></div>
+      <div id="mapBelow"></div>
+    </div>
+    <div class="side" id="mapRight"></div>
+  </div>
+</section>
+
+<!-- FICHAS -->
+<section class="view" id="v-fichas" aria-labelledby="t-fichas">
+  <span class="eyebrow" style="color:var(--ter)">Lectura fragmentada</span>
+  <h1 id="t-fichas">Fichas</h1>
+  <div class="fichas">
+    <div>
+      <label for="q" style="position:absolute;left:-9999px">Buscar</label>
+      <input class="search" id="q" placeholder="Buscar: Héctor, naves, muro…">
+      <div class="chips" id="kinds" style="margin:10px 0" role="group" aria-label="Filtrar"></div>
+      <div class="list" id="list"></div>
+    </div>
+    <article class="detail" id="detail" aria-live="polite"></article>
+  </div>
+</section>
+
+<!-- RELATO -->
+<section class="view" id="v-relato" aria-labelledby="t-relato">
+  <span class="eyebrow" style="color:var(--ter)">Lectura secuencial</span>
+  <h1 id="t-relato">Relato por jornadas</h1>
+  <div class="relato">
+    <div class="jlist" id="jlist"></div>
+    <div id="phaseView"></div>
+    <div class="mini" id="mini"></div>
+  </div>
+</section>
+</main>
+<footer>Prototipo de la pieza digital · Táctica y Territorio · Lautaro Altamirano y Nicolás Arias · Diseño Editorial B, Cátedra Bergero, FAPyD–UNR · 2026. Síntesis de trabajo; en la versión final, texto de Segalá (Ilíada, 1908) y Gracián (Tucídides, 1564), de dominio público.</footer>
+
+<script src="data.js"></script>
+<script>
+(() => {
+const D = window.TYT;
+const byCode = Object.fromEntries(D.E.map(e => [e.code, e]));
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KIND = {unidad:'Unidad', comandante:'Comandante', lugar:'Lugar', operacion:'Operación'};
+const codeCls = e => e.side === 'aqueo' ? 'code-aq' : (e.side === 'troyano' || e.side === 'esparta') ? 'code-tr' : '';
+const slug = c => c.toLowerCase().replace(/·/g, '-');
+const fromSlug = s => D.E.find(e => slug(e.code) === s);
+
+const st = { view:'codigo', map:'troya', day:26, mov:true, log:false, tags:true, sel:'IL·C·07', kind:'todas', q:'', j:26, ph:1 };
+try { const s = JSON.parse(localStorage.getItem('mesa-st') || '{}'); Object.assign(st, s.map ? {map:s.map, day:s.day, j:s.j, ph:s.ph} : {}); } catch(e) {}
+const save = () => { try { localStorage.setItem('mesa-st', JSON.stringify({map:st.map, day:st.day, j:st.j, ph:st.ph})); } catch(e) {} };
+
+function chip(code) {
+  const e = byCode[code]; if (!e) return '';
+  return `<button class="chip" data-open="${esc(code)}"><span class="mono ${codeCls(e)}">${esc(code)}</span>${esc(e.name)}</button>`;
+}
+document.addEventListener('click', ev => {
+  const o = ev.target.closest('[data-open]'); if (o) { openFicha(o.dataset.open); return; }
+  const m = ev.target.closest('[data-onmap]'); if (m) { showOnMap(m.dataset.onmap); return; }
+});
+
+/* ---------- routing ---------- */
+function go(view) { location.hash = view; }
+function route() {
+  let h = location.hash.slice(1) || 'codigo';
+  if (h.startsWith('ficha-')) { const e = fromSlug(h.slice(6)); if (e) st.sel = e.code; h = 'fichas'; }
+  if (!['codigo','mapa','fichas','relato'].includes(h)) h = 'codigo';
+  st.view = h;
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'v-' + h));
+  document.querySelectorAll('nav a').forEach(a => { if (a.dataset.v === h) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+  ({codigo:renderCodigo, mapa:renderMapa, fichas:renderFichas, relato:renderRelato})[h]();
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+
+/* ---------- código ---------- */
+const LAMV = {P01:['mapa','troya'],P02:['fichas',null],P03:['fichas','IL·C·03'],P04:['mapa','egeo'],P05:['mapa','troya'],P06:['relato',null],P07:['fichas','IL·C·07'],P08:['mapa','platea']};
+function openLam(p) {
+  const [v, arg] = LAMV[p];
+  if (v === 'mapa') { st.map = arg; if (arg === 'troya') st.day = 26; save(); go('mapa'); }
+  else if (v === 'fichas') { if (arg) st.sel = arg; go('fichas'); }
+  else go(v);
+}
+function renderCodigo() {
+  $('#lams').innerHTML = D.LAM.map(([p, t]) => `<button class="lam" data-lam="${p}"><span class="mono">ATLAS-I/${p}</span><b>${esc(t)}</b></button>`).join('')
+    + ['Pilos y Esfacteria','Mantinea','Siracusa'].map((t,i) => `<div class="lam" style="border-style:dashed;cursor:default"><span class="mono" style="color:var(--muted)">ATLAS-I/P${String(9+i).padStart(2,'0')}</span><b>${t}</b><span class="muted" style="font-size:13px">En desarrollo</span></div>`).join('');
+  document.querySelectorAll('[data-lam]').forEach(b => b.onclick = () => openLam(b.dataset.lam));
+}
+function norm(s) { return s.toUpperCase().replace(/ATLAS-?I?\/?/,'').replace(/[^A-Z0-9]/g,''); }
+$('#codeForm').addEventListener('submit', ev => {
+  ev.preventDefault();
+  const raw = $('#codeIn').value.trim(); const n = norm(raw); const out = $('#codeResult');
+  if (!n) { out.innerHTML = ''; return; }
+  const lam = n.match(/^P0?([1-8])$/);
+  if (lam) { const p = 'P0' + lam[1]; const t = D.LAM.find(l => l[0] === p)[1];
+    out.innerHTML = `<div class="panel"><span class="eyebrow" style="color:var(--ter)">Código detectado</span><h2 class="mono" style="margin:6px 0 2px">ATLAS-I / ${p}</h2><p style="margin:0 0 12px;font-size:18px">${esc(t)}</p><button class="btn dark" data-lam2="${p}">Abrir esta lámina →</button></div>`;
+    out.querySelector('[data-lam2]').onclick = () => openLam(p); return; }
+  const e = D.E.find(x => norm(x.code) === n || norm(x.code) === n.replace(/^(IL|TU)([UCLO])(T?)0*(\d+)$/, (m,a,b,c,d) => a+b+c+String(d).padStart(c?1:2,'0')));
+  if (e) {
+    out.innerHTML = `<div class="panel"><span class="eyebrow" style="color:var(--ter)">Código detectado · ${KIND[e.kind]}</span><h2 style="margin:6px 0 2px;font-size:28px">${esc(e.name)}</h2><p class="mono ${codeCls(e)}" style="margin:0 0 12px">${esc(e.code)}</p><div class="chips"><button class="btn dark" data-open="${esc(e.code)}">Abrir ficha →</button>${e.map ? `<button class="btn" data-onmap="${esc(e.code)}">Ver en el mapa</button>` : ''}</div></div>`;
+  } else out.innerHTML = `<div class="note">No hay ningún elemento con el código <span class="mono">${esc(raw)}</span>. Revisá el formato: fuente · tipo · número, por ejemplo <span class="mono">IL·L·02</span>.</div>`;
+});
+
+/* ---------- mapa ---------- */
+function showOnMap(code) {
+  const e = byCode[code]; if (!e || !e.map) return;
+  st.map = e.map.m; st.sel = code; save(); if (st.view === 'mapa') renderMapa(); else go('mapa');
+}
+function summary(code) {
+  const e = byCode[code];
+  if (!e) return '';
+  return `<div class="panel"><span class="eyebrow ${codeCls(e)}">Selección · ${esc(e.code)}</span><h2 style="font-size:24px;margin:6px 0 4px">${esc(e.name)}</h2><p class="muted" style="margin:0 0 8px;font-size:14px">${esc(e.sub)}</p>${e.fields.slice(0,3).map(f=>`<div style="font-size:14px"><span class="muted">${esc(f[0])}:</span> ${esc(f[1])}</div>`).join('')}<button class="btn dark" style="width:100%;margin-top:12px;justify-content:space-between" data-open="${esc(e.code)}">Abrir ficha <span>→</span></button></div>`;
+}
+const pct = (v, t) => (v / t * 100).toFixed(3) + '%';
+function renderMapa() {
+  document.querySelectorAll('[data-map]').forEach(b => { b.classList.toggle('dark', b.dataset.map === st.map); b.onclick = () => { st.map = b.dataset.map; save(); renderMapa(); }; });
+  const stage = $('#stage'), L = $('#mapLeft'), R = $('#mapRight'), B = $('#mapBelow');
+  if (st.map === 'troya') {
+    stage.style.aspectRatio = '960/720';
+    const movs = (D.MOV[st.day] || []);
+    stage.innerHTML = `<img src="troade-base-mesa.svg" alt="Esquema de la llanura de Troya con el campamento aqueo, los ríos y la ciudad">
+      <img class="lay" src="troade-log.svg" alt="" style="opacity:${st.log?1:0}">
+      <img class="lay" src="troade-j26.svg" alt="" style="opacity:${st.mov && st.day===26?1:0}">
+      <img class="lay" src="troade-j27.svg" alt="" style="opacity:${st.mov && st.day===27?1:0}">
+      ${st.tags ? D.E.filter(e=>e.kind==='lugar').map(e=>`<button class="pin ${st.sel===e.code?'hi':''}" style="left:${pct(e.map.x,960)};top:${pct(e.map.y,720)}" data-pick="${esc(e.code)}" aria-label="${esc(e.name)}">${e.code.slice(-2)}</button>`).join('') : ''}
+      ${st.mov ? movs.map(m=>`<button class="mv ${m.side}" style="left:${pct(m.x,960)};top:${pct(m.y,720)}" data-mv="${m.n}" aria-label="Movimiento ${m.n}: ${esc(m.t)}">${m.n}</button>`).join('') : ''}`;
+    L.innerHTML = `<div><span class="eyebrow">Jornada</span><div class="days" style="margin-top:8px">${[22,25,26,27].map(d=>`<button class="btn ${st.day===d?'sel':''}" data-day="${d}" aria-pressed="${st.day===d}">${d}</button>`).join('')}</div><p class="muted" style="font-size:13px;margin:8px 0 0">Las cuatro jornadas de combate.</p></div>
+      <div><span class="eyebrow">Capas</span><div style="display:flex;flex-direction:column;gap:6px;margin-top:8px">
+        <button class="toggle" data-t="mov" aria-pressed="${st.mov}"><span class="box"></span>Movimientos de la jornada</button>
+        <button class="toggle" data-t="log" aria-pressed="${st.log}"><span class="box"></span>Logística por mar</button>
+        <button class="toggle" data-t="tags" aria-pressed="${st.tags}"><span class="box"></span>Lugares con código (20)</button></div></div>
+      <div class="legend"><span class="eyebrow">Referencias</span>
+        <div><svg width="28" height="10" aria-hidden="true"><path d="M1 5h19" stroke="#C23A22" stroke-width="2.4"/><path d="M27 5l-8-4v8z" fill="#C23A22"/></svg>Troyanos y aliados</div>
+        <div><svg width="28" height="10" aria-hidden="true"><path d="M1 5h19" stroke="#2A4AA8" stroke-width="2.6"/><path d="M27 5l-8-4v8z" fill="#2A4AA8"/></svg>Aqueos</div>
+        <div><svg width="28" height="10" aria-hidden="true"><path d="M1 5h19" stroke="#2A4AA8" stroke-width="1.6" stroke-dasharray="4 3"/><path d="M27 5l-8-4v8z" fill="#2A4AA8"/></svg>Abastecimiento</div></div>`;
+    const J = D.J.find(j => j.d === st.day);
+    B.innerHTML = `<div class="timeline"><div style="display:flex;justify-content:space-between" class="eyebrow muted"><span>Día 1</span><span>51 días</span><span>Día 51</span></div>
+      <div class="tl" aria-hidden="true">${Array.from({length:51},(_,i)=>{const d=i+1;return `<span class="${[22,25,26,27].includes(d)?'c':''} ${d===st.day?'on':''}"></span>`}).join('')}</div>
+      <p style="margin:10px 0 0"><b>Jornada ${J.d} · cantos ${J.cantos} · ${J.versos.toLocaleString('es-AR')} versos.</b> ${esc(J.title)}. <a href="#relato" data-rel="1">Leer la jornada →</a></p></div>`;
+    B.querySelector('[data-rel]').onclick = ev => { ev.preventDefault(); st.j = st.day; st.ph = 0; save(); go('relato'); };
+    R.innerHTML = summary(st.sel && byCode[st.sel] ? st.sel : 'IL·C·07') + `<div><span class="eyebrow" style="display:block;border-bottom:1.5px solid var(--ink);padding-bottom:6px;margin-bottom:10px">Movimientos · jornada ${st.day}</span>${movs.length ? `<div class="movlist">${movs.map(m=>`<span class="n" style="color:${m.side==='aqueo'?'var(--nav)':'var(--ter)'}">${m.n}</span><span>${esc(m.t)} <span class="mono" style="font-size:11px">${esc(m.cite)}</span></span>`).join('')}</div>` : `<p class="muted" style="margin:0;font-size:14px">Esta jornada todavía no tiene capa de movimientos. Se puede leer en el relato.</p>`}</div>
+      <div class="note"><b>Lo que el papel no puede:</b> superponer jornadas y capas. El atlas fija una capa por lámina; la mesa las combina.</div>`;
+    L.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { st.day = +b.dataset.day; save(); renderMapa(); });
+    L.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { st[b.dataset.t] = !st[b.dataset.t]; renderMapa(); });
+    stage.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { st.sel = b.dataset.pick; renderMapa(); });
+    stage.querySelectorAll('[data-mv]').forEach(b => b.onclick = () => {
+      const J = D.J.find(j => j.d === st.day); const i = J.phases.findIndex(p => p.mov.includes(+b.dataset.mv));
+      st.j = st.day; st.ph = Math.max(0, i); save(); go('relato'); });
+  } else if (st.map === 'egeo') {
+    const G = D.EG; stage.style.aspectRatio = `${G.W}/${G.H}`;
+    stage.innerHTML = `<img src="egeo.svg" alt="Mapa del Egeo con los 29 contingentes aqueos, proporcionales a sus naves, y los aliados troyanos">
+      ${G.ach.map(c=>`<button class="ship ${st.sel===c.code?'hi':''}" style="left:${pct(c.x,G.W)};top:${pct(c.y,G.H)};width:${pct(2*c.r+4,G.W)};aspect-ratio:1" data-pick="${c.code}" aria-label="${esc(byCode[c.code].name)}, ${byCode[c.code].fields[1][1]} naves"><span>${c.r>9?c.n:''}</span></button>`).join('')}
+      ${G.tro.map(t=>`<button class="ally ${st.sel===t.code?'hi':''}" style="left:${pct(t.x,G.W)};top:${pct(t.y,G.H)}" data-pick="${t.code}" aria-label="${esc(byCode[t.code].name)}"></button>`).join('')}
+      <button class="ally ${st.sel==='IL·U·T1'?'hi':''}" style="left:${pct(G.troy[0],G.W)};top:${pct(G.troy[1],G.H)};width:28px;height:28px" data-pick="IL·U·T1" aria-label="Troyanos, Ilión"></button>`;
+    const tot = D.E.filter(e=>e.kind==='unidad'&&e.side==='aqueo');
+    L.innerHTML = `<div><span class="eyebrow">Orden de batalla</span><p style="margin:8px 0 0;font-size:15px">29 contingentes aqueos suman <b class="mono" style="color:var(--nav)">1.186</b> naves (II 494–759). El catálogo troyano solo nombra pueblos y jefes (II 816–877).</p></div>
+      <div class="legend"><span class="eyebrow">Referencias</span>
+      <div><svg width="22" height="22" aria-hidden="true"><circle cx="11" cy="11" r="9" fill="#2A4AA8" fill-opacity=".22" stroke="#2A4AA8" stroke-width="1.5"/></svg>Contingente aqueo (área ∝ naves)</div>
+      <div><svg width="22" height="22" aria-hidden="true"><path d="M11 3l8 8-8 8-8-8z" fill="#C23A22"/></svg>Aliado troyano</div>
+      <div><svg width="22" height="22" aria-hidden="true"><circle cx="11" cy="11" r="8" fill="none" stroke="#C23A22" stroke-width="2"/><circle cx="11" cy="11" r="3.5" fill="#C23A22"/></svg>Ilión</div></div>
+      <div class="note">Tocá un círculo o un rombo para ver el contingente. ⇄ Con estas cifras Tucídides calcula la expedición (I 10).</div>`;
+    B.innerHTML = '';
+    const top = [...tot].sort((a,b)=>+b.fields[1][1]-+a.fields[1][1]).slice(0,6);
+    R.innerHTML = summary(st.sel && byCode[st.sel] && byCode[st.sel].kind==='unidad' ? st.sel : 'IL·U·09') + `<div><span class="eyebrow" style="display:block;border-bottom:1.5px solid var(--ink);padding-bottom:6px;margin-bottom:8px">Mayores flotas</span>${top.map(e=>`<button class="item" data-pick2="${e.code}" style="grid-template-columns:1fr 46px"><span>${esc(e.name)}</span><span class="mono" style="text-align:right">${e.fields[1][1]}</span></button>`).join('')}</div>`;
+    stage.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { st.sel = b.dataset.pick; renderMapa(); });
+    R.querySelectorAll('[data-pick2]').forEach(b => b.onclick = () => { st.sel = b.dataset.pick2; renderMapa(); });
+  } else {
+    stage.style.aspectRatio = '720/660';
+    const P = byCode['TU·O·03'];
+    stage.innerHTML = `<img src="platea.svg" alt="Plano esquemático del asedio de Platea: ciudad, terraplén, obras de defensa, circunvalación doble y ruta de fuga">`;
+    L.innerHTML = `<div class="legend"><span class="eyebrow">Referencias</span>
+      <div><svg width="28" height="12" aria-hidden="true"><path d="M1 3h26M1 9h26" stroke="#C23A22" stroke-width="2.4"/></svg>Obras peloponesias</div>
+      <div><svg width="28" height="12" aria-hidden="true"><path d="M1 6h26" stroke="#2A4AA8" stroke-width="4"/></svg>Obras plateenses</div>
+      <div><svg width="28" height="12" aria-hidden="true"><path d="M1 6h26" stroke="#2A4AA8" stroke-width="2.4" stroke-dasharray="7 4"/></svg>Fuga de los 212</div>
+      <div><svg width="28" height="12" aria-hidden="true"><path d="M1 6h26" stroke="#C23A22" stroke-width="1.2" stroke-dasharray="5 4"/></svg>Fosos</div></div>
+      <div class="note">Plano esquemático sin escala: Tucídides no precisa la posición del terraplén.</div>`;
+    B.innerHTML = '';
+    R.innerHTML = summary('TU·O·03') + `<div class="note"><b>Medir el muro contando ladrillos (III 20).</b> Muchos contaron a la vez las hiladas del muro enemigo, se quedaron con el número que más se repetía y calcularon el largo de las escaleras. Extracción de datos: lo mismo que hace este atlas con el texto.</div>`;
+  }
+}
+
+/* ---------- fichas ---------- */
+function openFicha(code) { st.sel = code; if (st.view === 'fichas') renderFichas(); else go('fichas'); }
+function renderFichas() {
+  const kinds = [['todas','Todas'],['comandante','Comandantes'],['unidad','Unidades'],['lugar','Lugares'],['operacion','Operaciones']];
+  $('#kinds').innerHTML = kinds.map(([k,t]) => `<button class="chip ${st.kind===k?'':''}" style="${st.kind===k?'background:var(--ink);color:var(--paper)':''}" data-k="${k}" aria-pressed="${st.kind===k}">${t}</button>`).join('');
+  $('#kinds').querySelectorAll('[data-k]').forEach(b => b.onclick = () => { st.kind = b.dataset.k; renderFichas(); });
+  const q = st.q.toLowerCase().normalize('NFD').replace(/\p{M}/gu,'');
+  const items = D.E.filter(e => (st.kind==='todas' || e.kind===st.kind) && (!q || (e.code+' '+e.name+' '+e.sub+' '+e.fields.map(f=>f[1]).join(' ')).toLowerCase().normalize('NFD').replace(/\p{M}/gu,'').includes(q)));
+  $('#list').innerHTML = items.length ? items.map(e => `<button class="item" data-sel="${esc(e.code)}" aria-current="${st.sel===e.code}"><span class="mono ${codeCls(e)}">${esc(e.code)}</span><span>${esc(e.name)}</span></button>`).join('') : '<p class="muted" style="padding:10px 0">Sin resultados.</p>';
+  $('#list').querySelectorAll('[data-sel]').forEach(b => b.onclick = () => { st.sel = b.dataset.sel; renderFichas(); if (innerWidth < 760) $('#detail').scrollIntoView({behavior:'smooth'}); });
+  const e = byCode[st.sel] || D.E[0];
+  const lam = e.lam ? D.LAM.find(l => l[0] === e.lam) : null;
+  $('#detail').innerHTML = `<div class="head"><span class="tag ${e.side}">${esc(e.code)}</span><span class="eyebrow">${KIND[e.kind]} · ${e.side === 'aqueo' ? 'Aqueos' : e.side === 'troyano' ? 'Troyanos y aliados' : e.side === 'esparta' ? 'Peloponesios' : 'Ilíada'}</span></div>
+    <h1 style="font-size:clamp(34px,5vw,56px);margin:12px 0 4px">${esc(e.name)}</h1>
+    <p class="muted" style="margin:0;font-size:17px">${esc(e.sub)}</p>
+    <div class="fields">${e.fields.map(f=>`<div><span>${esc(f[0])}</span><span>${esc(f[1])}</span></div>`).join('')}</div>
+    ${e.body ? `<p class="body">${esc(e.body)}</p>` : ''}
+    ${e.cross ? `<div class="note cross">${esc(e.cross).replace('⇄','<b>⇄</b>')}</div>` : ''}
+    ${e.links.length ? `<span class="eyebrow" style="display:block;margin:20px 0 8px">Relaciones · tocá un código</span><div class="chips">${e.links.map(chip).join('')}</div>` : ''}
+    <div class="chips" style="margin-top:22px">${e.map ? `<button class="btn dark" data-onmap="${esc(e.code)}">Ver en el mapa</button>` : ''}${lam ? `<span class="btn" style="cursor:default;background:var(--band);border-color:var(--band)">En papel: lámina ${lam[0].slice(1)} · ${esc(lam[1])}</span>` : ''}</div>`;
+}
+$('#q').addEventListener('input', ev => { st.q = ev.target.value; renderFichas(); });
+
+/* ---------- relato ---------- */
+function renderRelato() {
+  const J = D.J.find(j => j.d === st.j) || D.J[2];
+  if (st.ph >= J.phases.length) st.ph = 0;
+  $('#jlist').innerHTML = D.J.map(j => `<div><button class="jbtn" data-j="${j.d}" aria-current="${j.d===J.d}"><b>Jornada ${j.d}</b><span>${j.cantos} · ${j.versos.toLocaleString('es-AR')} VERSOS</span></button>
+    ${j.d===J.d ? j.phases.map((p,i)=>`<button class="phase" data-ph="${i}" aria-current="${i===st.ph}"><span class="mono" style="font-size:12px">${i+1}</span>${esc(p.t)} · ${esc(p.c)}</button>`).join('') : ''}</div>`).join('');
+  $('#jlist').querySelectorAll('[data-j]').forEach(b => b.onclick = () => { st.j = +b.dataset.j; st.ph = 0; save(); renderRelato(); });
+  $('#jlist').querySelectorAll('[data-ph]').forEach(b => b.onclick = () => { st.ph = +b.dataset.ph; save(); renderRelato(); });
+  const p = J.phases[st.ph], prev = J.phases[st.ph-1], next = J.phases[st.ph+1];
+  $('#phaseView').innerHTML = `<span class="eyebrow" style="color:var(--ter)">IL·D·${J.d} · fase ${st.ph+1} de ${J.phases.length} · canto ${esc(p.c)}</span>
+    <h2 style="font-size:clamp(28px,3.5vw,40px);line-height:1.1;margin:8px 0 0">${esc(p.t)}</h2>
+    <div class="prog" style="grid-template-columns:repeat(${J.phases.length},1fr)">${J.phases.map((_,i)=>`<span class="${i<st.ph?'done':i===st.ph?'on':''}"></span>`).join('')}</div>
+    <p class="text">${esc(p.txt)}</p>
+    <p class="muted" style="font-size:13px;border-top:1px solid var(--rule);padding-top:8px">Síntesis de trabajo del canto ${esc(p.c)}. En la versión final, el texto de Segalá con numeración de versos.</p>
+    <span class="eyebrow" style="display:block;margin:18px 0 8px">En este pasaje</span><div class="chips">${p.codes.map(chip).join('')}</div>
+    <div class="pager">${prev ? `<button class="btn" data-go="${st.ph-1}"><span>← Fase ${st.ph}</span><span>${esc(prev.t)}</span></button>` : '<span></span>'}${next ? `<button class="btn dark" data-go="${st.ph+1}"><span>${esc(next.t)}</span><span>Fase ${st.ph+2} →</span></button>` : ''}</div>`;
+  $('#phaseView').querySelectorAll('[data-go]').forEach(b => b.onclick = () => { st.ph = +b.dataset.go; save(); renderRelato(); });
+  const movs = (D.MOV[J.d] || []);
+  const hasLayer = J.d === 26 || J.d === 27;
+  $('#mini').innerHTML = `<span class="eyebrow" style="display:block;margin-bottom:8px">Ahora en el mapa${p.mov.length ? ' · movimiento ' + p.mov.join(' y ') : ''}</span>
+    <div class="stage" style="aspect-ratio:960/720"><img src="troade-base-mesa.svg" alt="Mapa de la llanura de Troya">${hasLayer ? `<img src="troade-j${J.d}.svg" alt="">` : ''}
+    ${movs.map(m=>`<span class="mv ${m.side} ${p.mov.includes(m.n)?'hi':''}" style="left:${pct(m.x,960)};top:${pct(m.y,720)};opacity:${p.mov.includes(m.n)?1:.35}" aria-hidden="true">${m.n}</span>`).join('')}</div>
+    ${hasLayer ? '' : '<p class="muted" style="font-size:13px;margin:6px 0 0">Capa de movimientos de esta jornada en desarrollo.</p>'}
+    <button class="btn" style="width:100%;margin-top:10px;justify-content:space-between" id="toMap">Abrir en el mapa <span>→</span></button>
+    <div class="note" style="margin-top:16px"><b style="color:var(--ter)">⇄</b> Modos de lectura: secuencial acá, fragmentada en Fichas, exploratoria en Mapa. Cada código cruza al otro modo.</div>`;
+  $('#toMap').onclick = () => { st.map = 'troya'; st.day = J.d; save(); go('mapa'); };
+}
+
+route();
+})();
+</script>
+</body>
+</html>
