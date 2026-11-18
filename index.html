@@ -74,7 +74,12 @@ h2{font-size:22px;margin:0 0 10px;font-weight:600}
 .pin{position:absolute;transform:translate(-50%,-50%);cursor:pointer;border:1.2px solid var(--ink);background:var(--paper);font-family:var(--mono);font-size:10px;line-height:14px;padding:0 3px;min-width:22px;text-align:center;color:var(--ink)}
 .pin:hover,.pin.hi{background:var(--ink);color:var(--paper)}
 .mv{position:absolute;transform:translate(-50%,-50%);width:24px;height:24px;border-radius:50%;border:0;color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px var(--paper)}
-.mv.aqueo{background:var(--nav)}.mv.troyano{background:var(--ter-strong)}
+.mv.aqueo{background:var(--nav)}.mv.troyano{background:var(--ter-strong)}.mv.neutro{background:var(--ink)}
+.lbl{position:absolute;font-family:var(--mono);font-size:clamp(7px,1.1vw,10.5px);line-height:1.3;white-space:nowrap;pointer-events:none}
+.lbl.k-box{background:var(--paper);border:1px solid currentColor;padding:1px 5px}
+.lbl.k-sea{font-family:var(--serif);font-style:italic;font-size:clamp(11px,1.6vw,18px);letter-spacing:.15em;color:#6E6A60}
+.lbl.k-place,.lbl.k-city{font-weight:600;letter-spacing:.14em;font-size:clamp(8px,1.2vw,13px)}
+.lbl.k-unit{white-space:pre;text-align:center;transform:translateX(-50%);font-size:clamp(6px,.9vw,9.5px)}
 .mv.hi{box-shadow:0 0 0 3px var(--ink)}
 .ship{position:absolute;transform:translate(-50%,-50%);border-radius:50%;border:0;background:transparent;cursor:pointer;padding:0}
 .ship span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:600;font-size:10px;color:var(--ink)}
@@ -101,7 +106,7 @@ h2{font-size:22px;margin:0 0 10px;font-weight:600}
 .item[aria-current="true"]{background:var(--band)}
 .detail .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .tag{padding:4px 10px;color:#fff;font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.06em}
-.tag.aqueo{background:var(--nav)}.tag.troyano{background:var(--ter-strong)}.tag.neutro{background:var(--ink)}.tag.esparta{background:var(--ter-strong)}
+.tag.aqueo,.tag.atenas{background:var(--nav)}.tag.troyano{background:var(--ter-strong)}.tag.neutro{background:var(--ink)}.tag.esparta{background:var(--ter-strong)}
 .fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));border-top:1.5px solid var(--ink);border-bottom:1.5px solid var(--ink);margin:18px 0}
 .fields div{padding:10px 12px 10px 0;display:flex;flex-direction:column;gap:2px}
 .fields span:first-child{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -149,7 +154,7 @@ footer{max-width:1320px;margin:0 auto;padding:0 20px 40px;font-size:13px;color:v
   <div class="bar">
     <div class="brand">
       <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" fill="none" stroke="#F3F0E8" stroke-width="1.5"/><path d="M9 1v24M17 1v24M1 9h24M1 17h24" stroke="#F3F0E8"/><rect x="17" y="9" width="8" height="8" fill="#C23A22"/></svg>
-      <b>Mesa de Guerra</b><span>TÁCTICA Y TERRITORIO · ATLAS I</span>
+      <b>Mesa de Guerra</b><span>TÁCTICA Y TERRITORIO · ATLAS</span>
     </div>
     <nav aria-label="Secciones">
       <a href="#codigo" data-v="codigo">Código</a>
@@ -165,20 +170,20 @@ footer{max-width:1320px;margin:0 auto;padding:0 20px 40px;font-size:13px;color:v
 <section class="view" id="v-codigo" aria-labelledby="t-codigo">
   <span class="eyebrow" style="color:var(--ter)">Papel ⇄ pantalla</span>
   <h1 id="t-codigo">Entrá desde el atlas</h1>
-  <p class="lead">Cada lámina y cada elemento del atlas impreso tiene un código. Escribilo, o elegí una lámina, y la mesa abre la misma vista con las capas que el papel no puede mostrar a la vez.</p>
+  <p class="lead">Cada página y cada elemento del atlas impreso tiene un código. Escribilo, o elegí una página, y la mesa abre la misma vista con las capas que el papel no puede mostrar a la vez.</p>
   <div class="code-grid">
     <div>
       <form class="code-form" id="codeForm" autocomplete="off">
         <label for="codeIn" class="eyebrow" style="position:absolute;left:-9999px">Código del atlas</label>
-        <input id="codeIn" placeholder="IL·C·07 · ATLAS-I/P05" spellcheck="false">
+        <input id="codeIn" placeholder="IL·C·07 · pág. 5" spellcheck="false">
         <button class="btn dark" type="submit">Abrir</button>
       </form>
-      <p class="muted" style="font-size:14px;margin:8px 0 0">Fuente · tipo · número. <span class="mono">IL</span> Ilíada, <span class="mono">TU</span> Tucídides · <span class="mono">U</span> unidad, <span class="mono">C</span> comandante, <span class="mono">L</span> lugar, <span class="mono">O</span> operación. Se puede escribir sin puntos: <span class="mono">ilc07</span>.</p>
+      <p class="muted" style="font-size:14px;margin:8px 0 0">Fuente · tipo · número. <span class="mono">IL</span> Ilíada, <span class="mono">TU</span> Tucídides · <span class="mono">U</span> unidad, <span class="mono">C</span> comandante, <span class="mono">L</span> lugar, <span class="mono">O</span> operación. Se puede escribir sin puntos: <span class="mono">ilc07</span>. Para ir a una página: <span class="mono">pág. 5</span>.</p>
       <div class="result" id="codeResult" aria-live="polite"></div>
-      <div class="note" style="margin-top:20px">En la versión final el QR de cada lámina abre esta pantalla directamente. En este prototipo, escribí el código impreso debajo del QR (por ejemplo <span class="mono">ATLAS-I/P05</span>).</div>
+      <div class="note" style="margin-top:20px">Cada página del atlas tiene un QR: escanealo con el celular y la mesa abre directamente la vista de esa página.</div>
     </div>
     <div>
-      <h2 class="rule-top">Láminas del atlas</h2>
+      <h2 class="rule-top">Páginas del atlas</h2>
       <div class="lams" id="lams"></div>
     </div>
   </div>
@@ -189,9 +194,12 @@ footer{max-width:1320px;margin:0 auto;padding:0 20px 40px;font-size:13px;color:v
   <span class="eyebrow" style="color:var(--ter)">Lectura exploratoria</span>
   <h1 id="t-mapa">Mapa</h1>
   <div class="maptabs" role="group" aria-label="Mapas">
-    <button class="btn" data-map="troya">La llanura de Troya · P05</button>
-    <button class="btn" data-map="egeo">Catálogo de las naves · P04</button>
-    <button class="btn" data-map="platea">Asedio de Platea · P08</button>
+    <button class="btn" data-map="egeo">Catálogo de las naves · pág. 4</button>
+    <button class="btn" data-map="troya">Llanura de Troya · pág. 5</button>
+    <button class="btn" data-map="platea">Platea · pág. 8</button>
+    <button class="btn" data-map="pilos">Pilos · pág. 9</button>
+    <button class="btn" data-map="mantinea">Mantinea · pág. 10</button>
+    <button class="btn" data-map="siracusa">Siracusa · pág. 11</button>
   </div>
   <div class="map-layout">
     <div class="side left" id="mapLeft"></div>
@@ -229,7 +237,7 @@ footer{max-width:1320px;margin:0 auto;padding:0 20px 40px;font-size:13px;color:v
   </div>
 </section>
 </main>
-<footer>Prototipo de la pieza digital · Táctica y Territorio · Lautaro Altamirano y Nicolás Arias · Diseño Editorial B, Cátedra Bergero, FAPyD–UNR · 2026. Síntesis de trabajo; en la versión final, texto de Segalá (Ilíada, 1908) y Gracián (Tucídides, 1564), de dominio público.</footer>
+<footer>Pieza digital · Táctica y Territorio · Lautaro Altamirano, Nicolás Arias y Alex Sandín · Diseño Editorial B, Cátedra Bergero, FAPyD–UNR · 2026. Textos: síntesis propias sobre las traducciones de dominio público de Segalá (Ilíada, 1908) y Gracián (Tucídides, 1564).</footer>
 
 <script src="data.js"></script>
 <script>
@@ -239,7 +247,7 @@ const byCode = Object.fromEntries(D.E.map(e => [e.code, e]));
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const KIND = {unidad:'Unidad', comandante:'Comandante', lugar:'Lugar', operacion:'Operación'};
-const codeCls = e => e.side === 'aqueo' ? 'code-aq' : (e.side === 'troyano' || e.side === 'esparta') ? 'code-tr' : '';
+const codeCls = e => (e.side === 'aqueo' || e.side === 'atenas') ? 'code-aq' : (e.side === 'troyano' || e.side === 'esparta') ? 'code-tr' : '';
 const slug = c => c.toLowerCase().replace(/·/g, '-');
 const fromSlug = s => D.E.find(e => slug(e.code) === s);
 
@@ -260,6 +268,7 @@ document.addEventListener('click', ev => {
 function go(view) { location.hash = view; }
 function route() {
   let h = location.hash.slice(1) || 'codigo';
+  const pm = h.match(/^p(\d{2})$/); if (pm && LAMV['P' + pm[1]]) { openLam('P' + pm[1], true); return; }
   if (h.startsWith('ficha-')) { const e = fromSlug(h.slice(6)); if (e) st.sel = e.code; h = 'fichas'; }
   if (!['codigo','mapa','fichas','relato'].includes(h)) h = 'codigo';
   st.view = h;
@@ -271,31 +280,32 @@ function route() {
 window.addEventListener('hashchange', route);
 
 /* ---------- código ---------- */
-const LAMV = {P01:['mapa','troya'],P02:['fichas',null],P03:['fichas','IL·C·03'],P04:['mapa','egeo'],P05:['mapa','troya'],P06:['relato',null],P07:['fichas','IL·C·07'],P08:['mapa','platea']};
-function openLam(p) {
+const LAMV = {P01:['codigo',null],P02:['codigo',null],P03:['fichas','IL·C·03'],P04:['mapa','egeo'],P05:['mapa','troya'],P06:['relato',null],P07:['fichas','IL·C·07'],P08:['mapa','platea'],P09:['mapa','pilos'],P10:['mapa','mantinea'],P11:['mapa','siracusa']};
+function openLam(p, replace) {
+  const go = v => { if (replace) { history.replaceState(null, '', '#' + v); route(); } else location.hash = v; };
   const [v, arg] = LAMV[p];
   if (v === 'mapa') { st.map = arg; if (arg === 'troya') st.day = 26; save(); go('mapa'); }
+  else if (v === 'relato') { st.j = 26; st.ph = 0; save(); go('relato'); }
   else if (v === 'fichas') { if (arg) st.sel = arg; go('fichas'); }
   else go(v);
 }
 function renderCodigo() {
-  $('#lams').innerHTML = D.LAM.map(([p, t]) => `<button class="lam" data-lam="${p}"><span class="mono">ATLAS-I/${p}</span><b>${esc(t)}</b></button>`).join('')
-    + ['Pilos y Esfacteria','Mantinea','Siracusa'].map((t,i) => `<div class="lam" style="border-style:dashed;cursor:default"><span class="mono" style="color:var(--muted)">ATLAS-I/P${String(9+i).padStart(2,'0')}</span><b>${t}</b><span class="muted" style="font-size:13px">En desarrollo</span></div>`).join('');
+  $('#lams').innerHTML = D.LAM.map(([p, t]) => `<button class="lam" data-lam="${p}"><span class="mono">PÁG. ${+p.slice(1)}</span><b>${esc(t)}</b></button>`).join('');
   document.querySelectorAll('[data-lam]').forEach(b => b.onclick = () => openLam(b.dataset.lam));
 }
-function norm(s) { return s.toUpperCase().replace(/ATLAS-?I?\/?/,'').replace(/[^A-Z0-9]/g,''); }
+function norm(s) { return s.normalize('NFD').replace(/\p{M}/gu,'').toUpperCase().replace(/ATLAS-?I?\/?/,'').replace(/[^A-Z0-9]/g,''); }
 $('#codeForm').addEventListener('submit', ev => {
   ev.preventDefault();
   const raw = $('#codeIn').value.trim(); const n = norm(raw); const out = $('#codeResult');
   if (!n) { out.innerHTML = ''; return; }
-  const lam = n.match(/^P0?([1-8])$/);
-  if (lam) { const p = 'P0' + lam[1]; const t = D.LAM.find(l => l[0] === p)[1];
-    out.innerHTML = `<div class="panel"><span class="eyebrow" style="color:var(--ter)">Código detectado</span><h2 class="mono" style="margin:6px 0 2px">ATLAS-I / ${p}</h2><p style="margin:0 0 12px;font-size:18px">${esc(t)}</p><button class="btn dark" data-lam2="${p}">Abrir esta lámina →</button></div>`;
+  const lam = n.match(/^(?:PAGINA|PAG|P)0?(\d{1,2})$/);
+  if (lam && +lam[1] >= 1 && +lam[1] <= 11) { const p = 'P' + String(+lam[1]).padStart(2,'0'); const t = D.LAM.find(l => l[0] === p)[1];
+    out.innerHTML = `<div class="panel"><span class="eyebrow" style="color:var(--ter)">Página del atlas</span><h2 class="mono" style="margin:6px 0 2px">PÁG. ${+lam[1]}</h2><p style="margin:0 0 12px;font-size:18px">${esc(t)}</p><button class="btn dark" data-lam2="${p}">Abrir esta página →</button></div>`;
     out.querySelector('[data-lam2]').onclick = () => openLam(p); return; }
   const e = D.E.find(x => norm(x.code) === n || norm(x.code) === n.replace(/^(IL|TU)([UCLO])(T?)0*(\d+)$/, (m,a,b,c,d) => a+b+c+String(d).padStart(c?1:2,'0')));
   if (e) {
     out.innerHTML = `<div class="panel"><span class="eyebrow" style="color:var(--ter)">Código detectado · ${KIND[e.kind]}</span><h2 style="margin:6px 0 2px;font-size:28px">${esc(e.name)}</h2><p class="mono ${codeCls(e)}" style="margin:0 0 12px">${esc(e.code)}</p><div class="chips"><button class="btn dark" data-open="${esc(e.code)}">Abrir ficha →</button>${e.map ? `<button class="btn" data-onmap="${esc(e.code)}">Ver en el mapa</button>` : ''}</div></div>`;
-  } else out.innerHTML = `<div class="note">No hay ningún elemento con el código <span class="mono">${esc(raw)}</span>. Revisá el formato: fuente · tipo · número, por ejemplo <span class="mono">IL·L·02</span>.</div>`;
+  } else out.innerHTML = `<div class="note">No hay ningún elemento con el código <span class="mono">${esc(raw)}</span>. Revisá el formato: fuente · tipo · número, por ejemplo <span class="mono">IL·L·02</span>, o una página: <span class="mono">pág. 5</span>.</div>`;
 });
 
 /* ---------- mapa ---------- */
@@ -317,6 +327,8 @@ function renderMapa() {
     const movs = (D.MOV[st.day] || []);
     stage.innerHTML = `<img src="troade-base-mesa.svg" alt="Esquema de la llanura de Troya con el campamento aqueo, los ríos y la ciudad">
       <img class="lay" src="troade-log.svg" alt="" style="opacity:${st.log?1:0}">
+      <img class="lay" src="troade-j22.svg" alt="" style="opacity:${st.mov && st.day===22?1:0}">
+      <img class="lay" src="troade-j25.svg" alt="" style="opacity:${st.mov && st.day===25?1:0}">
       <img class="lay" src="troade-j26.svg" alt="" style="opacity:${st.mov && st.day===26?1:0}">
       <img class="lay" src="troade-j27.svg" alt="" style="opacity:${st.mov && st.day===27?1:0}">
       ${st.tags ? D.E.filter(e=>e.kind==='lugar').map(e=>`<button class="pin ${st.sel===e.code?'hi':''}" style="left:${pct(e.map.x,960)};top:${pct(e.map.y,720)}" data-pick="${esc(e.code)}" aria-label="${esc(e.name)}">${e.code.slice(-2)}</button>`).join('') : ''}
@@ -335,8 +347,8 @@ function renderMapa() {
       <div class="tl" aria-hidden="true">${Array.from({length:51},(_,i)=>{const d=i+1;return `<span class="${[22,25,26,27].includes(d)?'c':''} ${d===st.day?'on':''}"></span>`}).join('')}</div>
       <p style="margin:10px 0 0"><b>Jornada ${J.d} · cantos ${J.cantos} · ${J.versos.toLocaleString('es-AR')} versos.</b> ${esc(J.title)}. <a href="#relato" data-rel="1">Leer la jornada →</a></p></div>`;
     B.querySelector('[data-rel]').onclick = ev => { ev.preventDefault(); st.j = st.day; st.ph = 0; save(); go('relato'); };
-    R.innerHTML = summary(st.sel && byCode[st.sel] ? st.sel : 'IL·C·07') + `<div><span class="eyebrow" style="display:block;border-bottom:1.5px solid var(--ink);padding-bottom:6px;margin-bottom:10px">Movimientos · jornada ${st.day}</span>${movs.length ? `<div class="movlist">${movs.map(m=>`<span class="n" style="color:${m.side==='aqueo'?'var(--nav)':'var(--ter)'}">${m.n}</span><span>${esc(m.t)} <span class="mono" style="font-size:11px">${esc(m.cite)}</span></span>`).join('')}</div>` : `<p class="muted" style="margin:0;font-size:14px">Esta jornada todavía no tiene capa de movimientos. Se puede leer en el relato.</p>`}</div>
-      <div class="note"><b>Lo que el papel no puede:</b> superponer jornadas y capas. El atlas fija una capa por lámina; la mesa las combina.</div>`;
+    R.innerHTML = summary(st.sel && byCode[st.sel] ? st.sel : 'IL·C·07') + `<div><span class="eyebrow" style="display:block;border-bottom:1.5px solid var(--ink);padding-bottom:6px;margin-bottom:10px">Movimientos · jornada ${st.day}</span>${movs.length ? `<div class="movlist">${movs.map(m=>`<span class="n" style="color:${m.side==='aqueo'?'var(--nav)':m.side==='neutro'?'var(--ink)':'var(--ter)'}">${m.n}</span><span>${esc(m.t)} <span class="mono" style="font-size:11px">${esc(m.cite)}</span></span>`).join('')}</div>` : `<p class="muted" style="margin:0;font-size:14px">Esta jornada todavía no tiene capa de movimientos. Se puede leer en el relato.</p>`}</div>
+      <div class="note"><b>Lo que el papel no puede:</b> superponer jornadas y capas. El atlas fija una capa por página; la mesa las combina.</div>`;
     L.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { st.day = +b.dataset.day; save(); renderMapa(); });
     L.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { st[b.dataset.t] = !st[b.dataset.t]; renderMapa(); });
     stage.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { st.sel = b.dataset.pick; renderMapa(); });
@@ -361,6 +373,18 @@ function renderMapa() {
     R.innerHTML = summary(st.sel && byCode[st.sel] && byCode[st.sel].kind==='unidad' ? st.sel : 'IL·U·09') + `<div><span class="eyebrow" style="display:block;border-bottom:1.5px solid var(--ink);padding-bottom:6px;margin-bottom:8px">Mayores flotas</span>${top.map(e=>`<button class="item" data-pick2="${e.code}" style="grid-template-columns:1fr 46px"><span>${esc(e.name)}</span><span class="mono" style="text-align:right">${e.fields[1][1]}</span></button>`).join('')}</div>`;
     stage.querySelectorAll('[data-pick]').forEach(b => b.onclick = () => { st.sel = b.dataset.pick; renderMapa(); });
     R.querySelectorAll('[data-pick2]').forEach(b => b.onclick = () => { st.sel = b.dataset.pick2; renderMapa(); });
+  } else if (st.map !== 'platea') {
+    const key = st.map, op = {pilos:'TU·O·07', mantinea:'TU·O·11', siracusa:'TU·O·14'}[key], E = byCode[op];
+    const col = {nav:'var(--nav)', ter:'var(--ter)', ink:'var(--ink)'};
+    stage.style.aspectRatio = '720/660';
+    stage.innerHTML = `<img src="${key}.svg" alt="Plano esquemático: ${esc(E.name)}">` + D.TUL[key].map(([x,y,t,c,k]) => {
+      const txt = ({'BAHÍA':'Bahía','MAR JÓNICO':'Mar Jónico','GRAN PUERTO':'Gran Puerto'})[t] || t;
+      return `<span class="lbl k-${k}" style="left:${pct(x,720)};top:${pct(y,660)};color:${k==='sea'?'#6E6A60':col[c]}">${esc(txt)}</span>`; }).join('');
+    const leg = {pilos:[['#2A4AA8','Fuerte, flota y desembarcos atenienses'],['#C23A22','Posiciones y flota espartanas']], mantinea:[['#2A4AA8','Alianza de Argos, Mantinea y Atenas'],['#C23A22','Esparta y aliados']], siracusa:[['#2A4AA8','Obras, flota y retirada atenienses'],['#C23A22','Contramuros y cierre siracusanos']]}[key];
+    L.innerHTML = `<div class="legend"><span class="eyebrow">Referencias</span>${leg.map(([c,t]) => `<div><svg width="28" height="12" aria-hidden="true"><path d="M1 6h26" stroke="${c}" stroke-width="4"/></svg>${t}</div>`).join('')}</div>
+      <div class="note">Plano esquemático sin escala, armado con lo que dice Tucídides. En papel: página ${+E.lam.slice(1)}.</div>`;
+    B.innerHTML = `<p class="body" style="margin-top:14px">${esc(E.body)}</p>`;
+    R.innerHTML = summary(op) + (E.cross ? `<div class="note"><b style="color:var(--ter)">⇄</b> ${esc(E.cross.replace('⇄ ', ''))}</div>` : '');
   } else {
     stage.style.aspectRatio = '720/660';
     const P = byCode['TU·O·03'];
@@ -388,14 +412,14 @@ function renderFichas() {
   $('#list').querySelectorAll('[data-sel]').forEach(b => b.onclick = () => { st.sel = b.dataset.sel; renderFichas(); if (innerWidth < 760) $('#detail').scrollIntoView({behavior:'smooth'}); });
   const e = byCode[st.sel] || D.E[0];
   const lam = e.lam ? D.LAM.find(l => l[0] === e.lam) : null;
-  $('#detail').innerHTML = `<div class="head"><span class="tag ${e.side}">${esc(e.code)}</span><span class="eyebrow">${KIND[e.kind]} · ${e.side === 'aqueo' ? 'Aqueos' : e.side === 'troyano' ? 'Troyanos y aliados' : e.side === 'esparta' ? 'Peloponesios' : 'Ilíada'}</span></div>
+  $('#detail').innerHTML = `<div class="head"><span class="tag ${e.side}">${esc(e.code)}</span><span class="eyebrow">${KIND[e.kind]} · ${e.side === 'aqueo' ? 'Aqueos' : e.side === 'troyano' ? 'Troyanos y aliados' : e.side === 'esparta' ? 'Esparta y aliados' : e.side === 'atenas' ? 'Atenas y aliados' : e.code.startsWith('TU') ? 'Tucídides' : 'Ilíada'}</span></div>
     <h1 style="font-size:clamp(34px,5vw,56px);margin:12px 0 4px">${esc(e.name)}</h1>
     <p class="muted" style="margin:0;font-size:17px">${esc(e.sub)}</p>
     <div class="fields">${e.fields.map(f=>`<div><span>${esc(f[0])}</span><span>${esc(f[1])}</span></div>`).join('')}</div>
     ${e.body ? `<p class="body">${esc(e.body)}</p>` : ''}
     ${e.cross ? `<div class="note cross">${esc(e.cross).replace('⇄','<b>⇄</b>')}</div>` : ''}
     ${e.links.length ? `<span class="eyebrow" style="display:block;margin:20px 0 8px">Relaciones · tocá un código</span><div class="chips">${e.links.map(chip).join('')}</div>` : ''}
-    <div class="chips" style="margin-top:22px">${e.map ? `<button class="btn dark" data-onmap="${esc(e.code)}">Ver en el mapa</button>` : ''}${lam ? `<span class="btn" style="cursor:default;background:var(--band);border-color:var(--band)">En papel: lámina ${lam[0].slice(1)} · ${esc(lam[1])}</span>` : ''}</div>`;
+    <div class="chips" style="margin-top:22px">${e.map ? `<button class="btn dark" data-onmap="${esc(e.code)}">Ver en el mapa</button>` : ''}${lam ? `<a class="btn" href="#${lam[0].toLowerCase()}" style="background:var(--band);border-color:var(--band)">En papel: página ${+lam[0].slice(1)} · ${esc(lam[1])}</a>` : ''}</div>`;
 }
 $('#q').addEventListener('input', ev => { st.q = ev.target.value; renderFichas(); });
 
@@ -412,12 +436,12 @@ function renderRelato() {
     <h2 style="font-size:clamp(28px,3.5vw,40px);line-height:1.1;margin:8px 0 0">${esc(p.t)}</h2>
     <div class="prog" style="grid-template-columns:repeat(${J.phases.length},1fr)">${J.phases.map((_,i)=>`<span class="${i<st.ph?'done':i===st.ph?'on':''}"></span>`).join('')}</div>
     <p class="text">${esc(p.txt)}</p>
-    <p class="muted" style="font-size:13px;border-top:1px solid var(--rule);padding-top:8px">Síntesis de trabajo del canto ${esc(p.c)}. En la versión final, el texto de Segalá con numeración de versos.</p>
+    <p class="muted" style="font-size:13px;border-top:1px solid var(--rule);padding-top:8px">Síntesis del canto ${esc(p.c)} sobre la traducción de Segalá (1908).</p>
     <span class="eyebrow" style="display:block;margin:18px 0 8px">En este pasaje</span><div class="chips">${p.codes.map(chip).join('')}</div>
     <div class="pager">${prev ? `<button class="btn" data-go="${st.ph-1}"><span>← Fase ${st.ph}</span><span>${esc(prev.t)}</span></button>` : '<span></span>'}${next ? `<button class="btn dark" data-go="${st.ph+1}"><span>${esc(next.t)}</span><span>Fase ${st.ph+2} →</span></button>` : ''}</div>`;
   $('#phaseView').querySelectorAll('[data-go]').forEach(b => b.onclick = () => { st.ph = +b.dataset.go; save(); renderRelato(); });
   const movs = (D.MOV[J.d] || []);
-  const hasLayer = J.d === 26 || J.d === 27;
+  const hasLayer = true;
   $('#mini').innerHTML = `<span class="eyebrow" style="display:block;margin-bottom:8px">Ahora en el mapa${p.mov.length ? ' · movimiento ' + p.mov.join(' y ') : ''}</span>
     <div class="stage" style="aspect-ratio:960/720"><img src="troade-base-mesa.svg" alt="Mapa de la llanura de Troya">${hasLayer ? `<img src="troade-j${J.d}.svg" alt="">` : ''}
     ${movs.map(m=>`<span class="mv ${m.side} ${p.mov.includes(m.n)?'hi':''}" style="left:${pct(m.x,960)};top:${pct(m.y,720)};opacity:${p.mov.includes(m.n)?1:.35}" aria-hidden="true">${m.n}</span>`).join('')}</div>
